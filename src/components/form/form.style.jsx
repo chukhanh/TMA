@@ -5,13 +5,14 @@ export const StyledSelect = styled.select`
 `;
 
 export const StyledErrorMessage = styled.div`
-  font-size: 12px;
+  font-size: 1.5rem;
   color: var(--red-600);
   width: 400px;
-  margin-top: 0.25rem;
+  margin-top: 0.5rem;
   &:before {
     content: "❌ ";
-    font-size: 10px;
+    margin: auto 0;
+    font-size: 1rem;
   }
   @media (prefers-color-scheme: dark) {
     color: var(--red-300);

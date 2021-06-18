@@ -1,0 +1,82 @@
+input[type="email"],
+input[type="text"],
+input[type="number"],
+input[type="password"] {
+  padding: 2rem 0.5rem;
+  font-size: 1.5rem;
+  border: 2px solid #000;
+  background-color: #fff;
+  color: #000;
+  border-radius: 10px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 50rem;
+  //   margin: 1rem auto;
+}
+
+label {
+  margin: 1rem 0;
+  font-size: 2rem;
+}
+
+.formInput {
+  width: 50%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+
+  //   label {
+  //     margin: 1rem 0;
+  //     font-size: 2rem;
+  //   }
+
+  .error {
+    margin: 1rem 0;
+    color: brown;
+  }
+}
+
+.formCheckBox {
+  width: 50%;
+  margin: 0 auto;
+  .checkBox {
+    display: flex;
+    flex-direction: row;
+    input {
+      width: 3rem;
+      height: 5rem;
+      padding: 1rem;
+      margin: auto 0;
+    }
+    span {
+      margin: auto 0;
+    }
+  }
+  .error {
+    margin: .1rem 0;
+    color: brown;
+  }
+}
+
+.formSelect {
+  width: 50%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+
+  select {
+    // margin:0;
+    font-size: 2rem;
+    width: 50rem;
+    padding: 1rem 0.5rem;
+    font-size: 1.5rem;
+    border: 2px solid #000;
+    background-color: #fff;
+    color: #000;
+    border-radius: 10px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+}

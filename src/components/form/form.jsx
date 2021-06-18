@@ -1,50 +1,51 @@
 import React from "react";
 import {useField} from "formik";
 import {StyledSelect, StyledErrorMessage, StyledLabel} from './form.style.jsx';
+import style from './form.module.scss';
 
-export const formInput = ({ label, ...props }) => {
+export const FormInput = ({ label, ...props }) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [field, meta] = useField(props);
     return (
-        <>
+        <div className={style.formInput}>
           <label htmlFor={props.id || props.name}>{label}</label>
-          <input className="text-input" {...field} {...props} />
+          <input className={style.textInput} {...field} {...props} />
           {meta.touched && meta.error ? (
-            <div className="error">{meta.error}</div>
+            <div className={style.error}>{meta.error}</div>
           ) : null}
-        </>
+        </div>
       );
 }
 
-export const formCheckBox = ({ children, ...props }) => {
+export const FormCheckBox = ({ children, ...props }) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [field, meta] = useField({ ...props, type: "checkbox" });
     return (
-      <>
-        <label className="checkbox">
+      <div className={style.formCheckBox}>
+        <label className={style.checkBox}>
           <input {...field} {...props} type="checkbox" />
-          {children}
+          <span>{children}</span>
         </label>
         {meta.touched && meta.error ? (
-          <div className="error">{meta.error}</div>
+          <div className={style.error}>{meta.error}</div>
         ) : null}
-      </>
+      </div>
     );
   };
 
-export const formSelect = ({ label, ...props }) => {
+export const FormSelect = ({ label, ...props }) => {
     // useField() returns [formik.getFieldProps(), formik.getFieldMeta()]
     // which we can spread on <input> and alse replace ErrorMessage entirely.
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [field, meta] = useField(props);
     return (
-      <>
+      <div className={style.formSelect}>
         <StyledLabel htmlFor={props.id || props.name}>{label}</StyledLabel>
-        <StyledSelect {...field} {...props} />
+        <StyledSelect {...field} {...props}/>
         {meta.touched && meta.error ? (
           <StyledErrorMessage>{meta.error}</StyledErrorMessage>
         ) : null}
-      </>
+      </div>
     );
   };
 
