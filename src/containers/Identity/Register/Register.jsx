@@ -4,14 +4,28 @@ import {
   FormInput,
   FormSelect,
 } from "../../../components/form/form";
-import ReactDOM from "react-dom";
 import style from "./Register.module.scss";
 import RegisterSVG from "../../img/register.svg";
 import * as Yup from "yup";
-import { Formik, Form, useField } from "formik";
+import { Formik, Form } from "formik";
 import { Link } from "react-router-dom";
+import { SignUp } from "../../../services/api/signUp";
+import { checkObject, convertObject } from "../../../utils/object";
+import { registerScuess, error } from "../../../utils/messages";
 
 export default class Register extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      acceptedTerms: false, // added for our checkbox
+      type: "",
+    };
+  }
+
   render() {
     return (
       <div className={style.registerIdentity}>
@@ -19,27 +33,34 @@ export default class Register extends Component {
           <h1>SIGN UP</h1>
           <div className={style.registerForm}>
             <Formik
-              initialValues={{
-                email: "",
-                password: "",
-                confirmPassword: "",
-                acceptedTerms: false, // added for our checkbox
-                clientType: "", // added for our select
+              initialValues={this.state}
+              validate={(values) => {
+                let error = {};
+                if (checkObject(convertObject(values.email), this.props.data) === true)
+                 {error.email = "The email do exist";}
+                return error;
               }}
               validationSchema={Yup.object({
                 email: Yup.string()
-                  .email("Invalid email addresss`")
+                  .email("Invalid email addresss")
                   .required("Required"),
                 password: Yup.string()
                   .min(8, "Minimum 8 characters")
                   .required("Required!"),
                 confirmPassword: Yup.string()
+                  .required("Required!")
                   .min(8, "Minimum 8 characters")
-                  .required("Required!"),
+                  .when("password", {
+                    is: (val) => (val && val.length > 0 ? true : false),
+                    then: Yup.string().oneOf(
+                      [Yup.ref("password")],
+                      "Both password need to be the same"
+                    ),
+                  }),
                 acceptedTerms: Yup.boolean()
                   .required("Required")
                   .oneOf([true], "You must accept the terms and conditions."),
-                clientType: Yup.string()
+                type: Yup.string()
                   // specify the set of valid values for job type
                   // @see http://bit.ly/yup-mixed-oneOf
                   .oneOf(["Client", "Seller"], "Invalid Client Type")
@@ -49,8 +70,12 @@ export default class Register extends Component {
                 await new Promise((r) => setTimeout(r, 500));
                 console.log(values);
                 setSubmitting(false);
-              }}
+                SignUp(values);
+                // console.log(convertObject(values.email, Object.keys(values.email)));
+                console.log(Object.keys(values.email));
+            }}
             >
+              {({ values }) => (
               <Form>
                 <FormInput
                   label="Email Address"
@@ -70,7 +95,7 @@ export default class Register extends Component {
                   type="password"
                   placeholder="Your Confirm Password"
                 />
-                <FormSelect label="Client Type" name="clientType">
+                <FormSelect label="Type" name="type">
                   <option value="">Select A Client Type</option>
                   <option value="Client">Client</option>
                   <option value="Seller">Seller</option>
@@ -79,9 +104,20 @@ export default class Register extends Component {
                   I accept the terms and conditions
                 </FormCheckBox>
                 <div className={style.btnSignUP}>
-                  <button type="submit">RESIGTER</button>
+                  <button type="submit"
+                  onClick={
+                    checkObject(convertObject(values.email), this.props.data) === false 
+                    ? registerScuess
+                    : error
+                  }
+                  >
+                    {checkObject(convertObject(values.email), this.props.data) === false 
+                     ? <Link to="./login" style={{ color: "#fff" }}>REGISTER</Link>
+                     : <div>REGISTER</div>
+                  }</button>
                 </div>
               </Form>
+              )}
             </Formik>
           </div>
         </div>
