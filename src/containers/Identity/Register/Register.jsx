@@ -71,8 +71,7 @@ export default class Register extends Component {
                 console.log(values);
                 setSubmitting(false);
                 SignUp(values);
-                // console.log(convertObject(values.email, Object.keys(values.email)));
-                console.log(Object.keys(values.email));
+                // console.log(Object.keys(values.email));
             }}
             >
               {({ values }) => (
@@ -112,8 +111,9 @@ export default class Register extends Component {
                   }
                   >
                     {checkObject(convertObject(values.email), this.props.data) === false 
-                     ? <Link to="./login" style={{ color: "#fff" }}>REGISTER</Link>
+                     ? <Link to="./login" style={{ color: "#fff", width: "100%" }}>REGISTER</Link>
                      : <div>REGISTER</div>
+                    // : <Link to="./login" style={{ color: "#fff", width: "100%" }}>REGISTER</Link>
                   }</button>
                 </div>
               </Form>
