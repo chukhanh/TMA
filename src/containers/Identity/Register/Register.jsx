@@ -10,12 +10,11 @@ import RegisterSVG from "../../img/register.svg";
 import * as Yup from "yup";
 import { Formik, Form, useField } from "formik";
 import { Route, Link, Router } from "react-router-dom";
-import {filtered, convertObject, checkObject} from "../../../utils/object";
+import { filtered, convertObject, checkObject, findByTemplate } from "../../../utils/object";
 import { registerScuess, error } from "../../../utils/messages";
 import { SignUp } from "../../../services/api/SignUp";
 import { debounce } from "../../../utils/debounce";
 import "antd/dist/antd.css";
-
 export default class Register extends Component {
   constructor(props) {
     super(props);
@@ -32,13 +31,11 @@ export default class Register extends Component {
         email: "",
         password: "",
         type: "",
-      }
+      },
     };
 
     // this.userClickRegister = this.userClickRegister.bind(this);
   }
-
-
 
   render() {
     return (
@@ -48,12 +45,14 @@ export default class Register extends Component {
           <div className={style.registerForm}>
             <Formik
               initialValues={this.state.form}
-              validate={(values) => {
-                let error = {};
-                if (checkObject(convertObject(values.email), this.props.data) === false)
-                 {error.email = "The email do exist";}
-                return error;
-              }}
+              // validate={(values) => {
+              //   let error = {};
+          
+              //   var length =  findByTemplate(this.props.data, values.email).length
+              //   (length > 1) ? error.email = "The email do exist" : 0;
+                
+              //   return error;
+              // }}
               validationSchema={Yup.object({
                 email: Yup.string()
                   .email("Invalid email addresss`")
@@ -73,20 +72,30 @@ export default class Register extends Component {
                   .oneOf(["Client", "Seller"], "Invalid Client Type")
                   .required("Required"),
               })}
-              onSubmit={async (values, { setSubmitting }) => {
-                await new Promise((r) => setTimeout(r, 500));
-                setSubmitting(false);
+              onSubmit={async (
+                values,
+                { setSubmitting, handleSubmit, setValues, resetForm, isValid, dirty }
+              ) => {
                 this.setState({
                   account: {
                     email: values.email,
                     password: values.password,
-                    type:  values.type
-                  }
-                })
-                SignUp(values);
-                this.props.history.push('./login');
-                console.log(this.state.account);
-                ;
+                    type: values.type,
+                  },
+                });
+                setTimeout(() => {
+                  setSubmitting(false);
+                  SignUp(this.state.account);
+                  // console.log(this.state.account);
+                  // console.log(this.props.data);
+                  var check = checkObject(this.state.account, this.props.data);
+                  console.log(check);
+                  // var length =  findByTemplate(this.props.data, this.state.account).length;
+                  // console.log(length);
+                  resetForm();
+                  this.props.history.push("./login");
+                  // route to success page
+                }, 1000);
               }}
             >
               {({ values }) => (
@@ -118,11 +127,7 @@ export default class Register extends Component {
                     I accept the terms and conditions
                   </FormCheckBox>
                   <div className={style.btnSignUP}>
-                    <button
-                      type="submit"
-                    >
-                      RESIGTER
-                    </button>
+                    <button type="submit">RESIGTER</button>
                   </div>
                 </Form>
               )}

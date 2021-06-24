@@ -1,19 +1,19 @@
 export const checkObject = (person, account) => {
-  let check = true;
-  if (account.length === 0) check = false;
-  else if (person.length === 0) check = false;
+  // let check = true;
+  // if (account.length === 0) check = false;
+  // else if (person.length === 0) check = false;
   // eslint-disable-next-line array-callback-return
-  else {
+  // else {
     account.filter((user) => {
       return Object.keys(person).every((account) => {
-        person[account] === user[account]
-          ? (check = true)
-          : (check = false);
+        return person[account] === user[account]
+          // ? (check = true)
+          // : (check = false);
       });
     });
-  }
+  // }
 
-  return check;
+  // return check;
 };
 // return check;
 
