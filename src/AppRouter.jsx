@@ -3,6 +3,7 @@ import { Switch, Route, BrowserRouter as Router, Redirect} from 'react-router-do
 
 import Identity from './containers/Identity';
 
+
 export default function AppRouter() {
     return(
         <Router>

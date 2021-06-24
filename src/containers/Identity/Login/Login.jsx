@@ -6,8 +6,19 @@ import log from "../../img/log.svg";
 import * as Yup from "yup";
 import { Formik, Form } from "formik";
 import { Link } from "react-router-dom";
+import { checkObject, convertObject, findByTemplate } from "../../../utils/object";
+import { SignIn } from "../../../services/api/SignIN";
 
 class Login extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      form: { email: "", password: "" },
+      check: false,
+    };
+  }
+
   render() {
     return (
       <div className={style.loginIdentity}>
@@ -30,9 +41,18 @@ class Login extends Component {
             <h1>SIGN IN</h1>
             <div className={style.LoginFormik}>
               <Formik
-                initialValues={{
-                  email: "",
-                  password: "",
+                initialValues={this.state.form}
+                validate={(values) => {
+                  let error = {};
+                  if (
+                    checkObject(
+                      convertObject(values.email),
+                      this.props.data
+                    ) === false
+                  ) {
+                    error.email = "The email doesn't exist";
+                  }
+                  return error;
                 }}
                 validationSchema={Yup.object({
                   email: Yup.string()
@@ -42,29 +62,41 @@ class Login extends Component {
                     .min(8, "Minimum 8 characters")
                     .required("Required!"),
                 })}
-                onSubmit={async (values, { setSubmitting }) => {
+                onSubmit={async (values, { setSubmitting}) => {
                   await new Promise((r) => setTimeout(r, 500));
                   console.log(values);
                   setSubmitting(false);
-                }}
+                  this.setState({
+                    check: checkObject(values, this.props.data),
+                  });
+                  //
+                  SignIn(findByTemplate(this.props.data, values));
+                  this.state.check
+                    ? this.props.history.push("./category")
+                    : this.props.history.push("./login");
+                  // actions.resetForm();  
+                  }}
+
               >
-                <Form>
-                  <FormInput
-                    label="Email Address"
-                    name="email"
-                    type="email"
-                    placeholder="TMA@formik.com"
-                  />
-                  <FormInput
-                    label="Password"
-                    name="password"
-                    type="password"
-                    placeholder="Your Password"
-                  />
-                  <div className={style.btnLogin}>
-                    <button type="submit">LOGIN</button>
-                  </div>
-                </Form>
+                {({ values }) => (
+                  <Form>
+                    <FormInput
+                      label="Email Address"
+                      name="email"
+                      type="email"
+                      placeholder="TMA@formik.com"
+                    />
+                    <FormInput
+                      label="Password"
+                      name="password"
+                      type="password"
+                      placeholder="Your Password"
+                    />
+                    <div className={style.btnLogin}>
+                      <button type="submit">LOGIN</button>
+                    </div>
+                  </Form>
+                )}
               </Formik>
             </div>
           </div>

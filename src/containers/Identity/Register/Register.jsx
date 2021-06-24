@@ -9,9 +9,37 @@ import style from "./Register.module.scss";
 import RegisterSVG from "../../img/register.svg";
 import * as Yup from "yup";
 import { Formik, Form, useField } from "formik";
-import { Link } from "react-router-dom";
+import { Route, Link, Router } from "react-router-dom";
+import {filtered, convertObject, checkObject} from "../../../utils/object";
+import { registerScuess, error } from "../../../utils/messages";
+import { SignUp } from "../../../services/api/SignUp";
+import { debounce } from "../../../utils/debounce";
+import "antd/dist/antd.css";
 
 export default class Register extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      form: {
+        email: "",
+        password: "",
+        confirmPassword: "",
+        acceptedTerms: false, // added for our checkbox
+        type: "",
+      },
+      account: {
+        email: "",
+        password: "",
+        type: "",
+      }
+    };
+
+    // this.userClickRegister = this.userClickRegister.bind(this);
+  }
+
+
+
   render() {
     return (
       <div className={style.registerIdentity}>
@@ -19,12 +47,12 @@ export default class Register extends Component {
           <h1>SIGN UP</h1>
           <div className={style.registerForm}>
             <Formik
-              initialValues={{
-                email: "",
-                password: "",
-                confirmPassword: "",
-                acceptedTerms: false, // added for our checkbox
-                clientType: "", // added for our select
+              initialValues={this.state.form}
+              validate={(values) => {
+                let error = {};
+                if (checkObject(convertObject(values.email), this.props.data) === false)
+                 {error.email = "The email do exist";}
+                return error;
               }}
               validationSchema={Yup.object({
                 email: Yup.string()
@@ -39,7 +67,7 @@ export default class Register extends Component {
                 acceptedTerms: Yup.boolean()
                   .required("Required")
                   .oneOf([true], "You must accept the terms and conditions."),
-                clientType: Yup.string()
+                type: Yup.string()
                   // specify the set of valid values for job type
                   // @see http://bit.ly/yup-mixed-oneOf
                   .oneOf(["Client", "Seller"], "Invalid Client Type")
@@ -47,41 +75,57 @@ export default class Register extends Component {
               })}
               onSubmit={async (values, { setSubmitting }) => {
                 await new Promise((r) => setTimeout(r, 500));
-                console.log(values);
                 setSubmitting(false);
+                this.setState({
+                  account: {
+                    email: values.email,
+                    password: values.password,
+                    type:  values.type
+                  }
+                })
+                SignUp(values);
+                this.props.history.push('./login');
+                console.log(this.state.account);
+                ;
               }}
             >
-              <Form>
-                <FormInput
-                  label="Email Address"
-                  name="email"
-                  type="email"
-                  placeholder="TMA@formik.com"
-                />
-                <FormInput
-                  label="Password"
-                  name="password"
-                  type="password"
-                  placeholder="Your Password"
-                />
-                <FormInput
-                  label="Confirm Password"
-                  name="confirmPassword"
-                  type="password"
-                  placeholder="Your Confirm Password"
-                />
-                <FormSelect label="Client Type" name="clientType">
-                  <option value="">Select A Client Type</option>
-                  <option value="Client">Client</option>
-                  <option value="Seller">Seller</option>
-                </FormSelect>
-                <FormCheckBox name="acceptedTerms">
-                  I accept the terms and conditions
-                </FormCheckBox>
-                <div className={style.btnSignUP}>
-                  <button type="submit">RESIGTER</button>
-                </div>
-              </Form>
+              {({ values }) => (
+                <Form>
+                  <FormInput
+                    label="Email Address"
+                    name="email"
+                    type="email"
+                    placeholder="TMA@formik.com"
+                  />
+                  <FormInput
+                    label="Password"
+                    name="password"
+                    type="password"
+                    placeholder="Your Password"
+                  />
+                  <FormInput
+                    label="Confirm Password"
+                    name="confirmPassword"
+                    type="password"
+                    placeholder="Your Confirm Password"
+                  />
+                  <FormSelect label="Client Type" name="type">
+                    <option value="">Select A Client Type</option>
+                    <option value="Client">Client</option>
+                    <option value="Seller">Seller</option>
+                  </FormSelect>
+                  <FormCheckBox name="acceptedTerms">
+                    I accept the terms and conditions
+                  </FormCheckBox>
+                  <div className={style.btnSignUP}>
+                    <button
+                      type="submit"
+                    >
+                      RESIGTER
+                    </button>
+                  </div>
+                </Form>
+              )}
             </Formik>
           </div>
         </div>
