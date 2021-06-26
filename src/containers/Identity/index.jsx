@@ -15,13 +15,40 @@ import Register from "./Register/Register";
 const Identity = () => {
   const { path } = useRouteMatch();
   let [users, setUsers] = useState([]);
+
   useEffect(() => {
     axios.get(apiAccount).then((response) => setUsers(response.data));
-  }, [users]);
-  
-  var account = localStorage.getItem('account-login-info');
-  var praseAccount = JSON.parse(account);
-  console.log(praseAccount);
+  }, []);
+
+  const useLocalStorage = (key) => {
+    const [storedValue, setStoredValue] = useState(() => {
+      try {
+        const item = window.localStorage.getItem(key);
+        return item ? JSON.parse(item) : 0;
+      } catch (error) {
+        
+        console.log(error);
+        return 0;
+      }
+    });
+
+    const setValue = (value) => {
+      try {
+        // Allow value to be a function so we have same API as useState
+        const valueToStore =
+          value instanceof Function ? value(storedValue) : value;
+        // Save state
+        setStoredValue(valueToStore);
+        // Save to local storage
+        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      } catch (error) {
+        // A more advanced implementation would handle the error case
+        console.log(error);
+      }
+    };
+    return [storedValue, setValue];
+  }
+
   return (
     <Switch>
       <Route
@@ -35,9 +62,11 @@ const Identity = () => {
         path={`${path}/register`}
         render={(props) => <Register {...props} data={users} />}
       />
-       <Route exact path={`${path}/category`}
-       render={(props) => <ProductScreen {...props} data={praseAccount} />}
-       />
+      <Route
+        exact
+        path={`${path}/category`}
+        render={(props) => <ProductScreen {...props} useLocalStorage={useLocalStorage}/>}
+      />
     </Switch>
   );
 };

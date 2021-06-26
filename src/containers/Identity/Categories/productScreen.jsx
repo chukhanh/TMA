@@ -7,7 +7,8 @@ export default class ProductScreen extends Component {
     render() {
         return (
             <div className={style.ProductScreen}>
-                <Header account={this.props.data}/>
+                <Header history={this.props.history} useLocalStorage={this.props.useLocalStorage}/>
+                
             </div>
         )
     }

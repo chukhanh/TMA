@@ -1,27 +1,62 @@
-import React from "react";
+import React, { useState } from "react";
 import Logo from "../Logo/Logo";
 import "./Header.scss";
-import { Menu, Dropdown } from "antd";
+import { Menu, Dropdown, message } from "antd";
 import { UserOutlined, DownOutlined } from "@ant-design/icons";
+const Header = ({ history, useLocalStorage }) => {
+ 
+  // const useLocalStorage = (key) => {
+  //   const [storedValue, setStoredValue] = useState(() => {
+  //     try {
+  //       const item = window.localStorage.getItem(key);
+  //       return item ? JSON.parse(item) : 0;
+  //     } catch (error) {
+        
+  //       console.log(error);
+  //       return 0;
+  //     }
+  //   });
 
-export default function Header({ account }) {
-  
-  console.log(account); 
-  const userClick = (e) => e.preventDefault();
-  const userLogOut = () => {
-    localStorage.removeItem("account-login-info");
-    this.props.history.push("./login");
+  //   const setValue = (value) => {
+  //     try {
+  //       // Allow value to be a function so we have same API as useState
+  //       const valueToStore =
+  //         value instanceof Function ? value(storedValue) : value;
+  //       // Save state
+  //       setStoredValue(valueToStore);
+  //       // Save to local storage
+  //       window.localStorage.setItem(key, JSON.stringify(valueToStore));
+  //     } catch (error) {
+  //       // A more advanced implementation would handle the error case
+  //       console.log(error);
+  //     }
+  //   };
+  //   return [storedValue, setValue];
+  // }
+
+  const userClick = ({ key }) => {
+    switch (key) {
+      case "1":
+        localStorage.removeItem("accountLoginInfo");
+        history.push(`./login`);
+        break;
+
+      default:
+        message.info(`Click on item ${key}`);
+        break;
+    }
   };
+
   const menu = (
-    <Menu>
-      <Menu.Item key="1">
-        <button type="submit" onSubmit={userLogOut}>Log Out</button>
-      </Menu.Item>
-      {/* <Menu.Item key="2">2nd menu item</Menu.Item>
-      <Menu.Item key="3">3rd menu item</Menu.Item> */}
+    <Menu onClick={userClick}>
+      <Menu.Item key="1">Log Out</Menu.Item>
     </Menu>
   );
 
+  let value;
+
+  [value] = useLocalStorage('accountLoginInfo');
+  
   return (
     <div className="header">
       <div className="navbar">
@@ -37,8 +72,11 @@ export default function Header({ account }) {
           <UserOutlined style={{ fontSize: "200%" }} />
           <div className="email">
             <Dropdown overlay={menu}>
-              <a className="antDropdownLink" onClick={userClick}>
-                <span>{account.email}</span>
+              <a
+                className="ant-dropdown-link"
+                onClick={(e) => e.preventDefault()}
+              >
+                <span>{value.map(e => e.email)}</span>
                 <DownOutlined />
               </a>
             </Dropdown>
@@ -48,3 +86,4 @@ export default function Header({ account }) {
     </div>
   );
 }
+export default  Header;

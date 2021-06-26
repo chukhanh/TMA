@@ -1,8 +1,5 @@
-import { apiAccount } from "../URL/URL";
-
-
-
+// import { apiAccount } from "../URL/URL";
 export const SignIn = async (account) => {
     
-    localStorage.setItem('account-login-info', JSON.stringify(account));
+    localStorage.setItem('accountLoginInfo', JSON.stringify(account));
 }

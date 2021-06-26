@@ -4,17 +4,14 @@ import {
   FormInput,
   FormSelect,
 } from "../../../components/form/form";
-import ReactDOM from "react-dom";
 import style from "./Register.module.scss";
 import RegisterSVG from "../../img/register.svg";
 import * as Yup from "yup";
-import { Formik, Form, useField } from "formik";
-import { Route, Link, Router } from "react-router-dom";
-import { filtered, convertObject, checkObject, findByTemplate } from "../../../utils/object";
+import { Formik, Form } from "formik";
+import { Link } from "react-router-dom";
 import { registerScuess, error } from "../../../utils/messages";
 import { SignUp } from "../../../services/api/SignUp";
-import { debounce } from "../../../utils/debounce";
-import "antd/dist/antd.css";
+// import {findByTemplate} from "../../../utils/object";
 export default class Register extends Component {
   constructor(props) {
     super(props);
@@ -34,8 +31,8 @@ export default class Register extends Component {
       },
     };
 
-    // this.userClickRegister = this.userClickRegister.bind(this);
   }
+
 
   render() {
     return (
@@ -45,14 +42,16 @@ export default class Register extends Component {
           <div className={style.registerForm}>
             <Formik
               initialValues={this.state.form}
-              // validate={(values) => {
-              //   let error = {};
-          
-              //   var length =  findByTemplate(this.props.data, values.email).length
-              //   (length > 1) ? error.email = "The email do exist" : 0;
-                
-              //   return error;
-              // }}
+              validate={(values) => {
+                let error = {};
+                if (this.props.data !== undefined)
+                  this.props.data.map((value) => {
+                    if (value.email === values.email)
+                      error.email = "The email does exist";
+                  });
+
+                return error;
+              }}
               validationSchema={Yup.object({
                 email: Yup.string()
                   .email("Invalid email addresss`")
@@ -67,14 +66,13 @@ export default class Register extends Component {
                   .required("Required")
                   .oneOf([true], "You must accept the terms and conditions."),
                 type: Yup.string()
-                  // specify the set of valid values for job type
-                  // @see http://bit.ly/yup-mixed-oneOf
+
                   .oneOf(["Client", "Seller"], "Invalid Client Type")
                   .required("Required"),
               })}
               onSubmit={async (
                 values,
-                { setSubmitting, handleSubmit, setValues, resetForm, isValid, dirty }
+                { setSubmitting, handleSubmit, setValues, resetForm, isValid }
               ) => {
                 this.setState({
                   account: {
@@ -83,28 +81,27 @@ export default class Register extends Component {
                     type: values.type,
                   },
                 });
-                setTimeout(() => {
-                  setSubmitting(false);
-                  SignUp(this.state.account);
-                  // console.log(this.state.account);
-                  // console.log(this.props.data);
-                  var check = checkObject(this.state.account, this.props.data);
-                  console.log(check);
-                  // var length =  findByTemplate(this.props.data, this.state.account).length;
-                  // console.log(length);
-                  resetForm();
-                  this.props.history.push("./login");
-                  // route to success page
-                }, 1000);
+
+                if (isValid === false) {
+                  error();
+                } else
+                  setTimeout(() => {
+                    setSubmitting(false);
+                    SignUp(this.state.account);
+                    resetForm();
+                    registerScuess();
+                    this.props.history.push("./login");
+                  }, 1000);
               }}
             >
-              {({ values }) => (
-                <Form>
+              {({ values, handleChange }) => (
+                <Form noValidate>
                   <FormInput
                     label="Email Address"
                     name="email"
                     type="email"
                     placeholder="TMA@formik.com"
+                    // handleChange={handleChange}
                   />
                   <FormInput
                     label="Password"

@@ -6,16 +6,17 @@ import log from "../../img/log.svg";
 import * as Yup from "yup";
 import { Formik, Form } from "formik";
 import { Link } from "react-router-dom";
-import { checkObject, convertObject, findByTemplate } from "../../../utils/object";
+import { findByTemplate } from "../../../utils/object";
 import { SignIn } from "../../../services/api/SignIN";
+import { error, success } from "../../../utils/messages";
+
 
 class Login extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      form: { email: "", password: "" },
-      check: false,
+      accountLogin: { email: "", password: "" },
     };
   }
 
@@ -41,17 +42,15 @@ class Login extends Component {
             <h1>SIGN IN</h1>
             <div className={style.LoginFormik}>
               <Formik
-                initialValues={this.state.form}
+                initialValues={this.state.accountLogin}
                 validate={(values) => {
                   let error = {};
-                  if (
-                    checkObject(
-                      convertObject(values.email),
-                      this.props.data
-                    ) === false
-                  ) {
-                    error.email = "The email doesn't exist";
-                  }
+                  if (this.props.data !== undefined)
+                    this.props.data.map((value) => {
+                      if (value.email !== values.email)
+                        error.email = "The email doesn't exist";
+                    });
+
                   return error;
                 }}
                 validationSchema={Yup.object({
@@ -62,21 +61,36 @@ class Login extends Component {
                     .min(8, "Minimum 8 characters")
                     .required("Required!"),
                 })}
-                onSubmit={async (values, { setSubmitting}) => {
-                  await new Promise((r) => setTimeout(r, 500));
-                  console.log(values);
-                  setSubmitting(false);
+                onSubmit={async (
+                  values,
+                  {
+                    setSubmitting,
+                    handleSubmit,
+                    setValues,
+                    resetForm,
+                    isValid,
+                    dirty,
+                  }
+                ) => {
                   this.setState({
-                    check: checkObject(values, this.props.data),
+                    accountLogin: {
+                      email: values.email,
+                      password: values.password,
+                    },
                   });
-                  //
-                  SignIn(findByTemplate(this.props.data, values));
-                  this.state.check
-                    ? this.props.history.push("./category")
-                    : this.props.history.push("./login");
-                  // actions.resetForm();  
-                  }}
-
+                  if (isValid === false) {
+                    error();
+                  } else
+                  setTimeout(() => {
+                    setSubmitting(false);
+                    SignIn(
+                      findByTemplate(this.props.data, this.state.accountLogin)
+                    );
+                    resetForm();
+                    success(values.email);
+                    this.props.history.push("./category");
+                  }, 1000);
+                }}
               >
                 {({ values }) => (
                   <Form>

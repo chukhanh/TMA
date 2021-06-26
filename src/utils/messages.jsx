@@ -1,6 +1,6 @@
 import { message } from "antd";
 import { checkObject } from "./object";
-
+import "antd/dist/antd.css";
 
 export const success = (person) => {
   // message.success(`Welcome to ${person}`)

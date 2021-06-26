@@ -9,7 +9,7 @@ export const FormInput = ({ label, ...props }) => {
     return (
         <div className={style.formInput}>
           <label htmlFor={props.id || props.name}>{label}</label>
-          <input className={style.textInput} {...field} {...props} />
+          <input  className={style.textInput} {...field} {...props} />
           {meta.touched && meta.error ? (
             <div className={style.error}>{meta.error}</div>
           ) : null}
