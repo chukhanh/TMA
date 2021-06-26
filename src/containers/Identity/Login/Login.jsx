@@ -10,7 +10,6 @@ import { findByTemplate } from "../../../utils/object";
 import { SignIn } from "../../../services/api/SignIN";
 import { error, success } from "../../../utils/messages";
 
-
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -21,6 +20,14 @@ class Login extends Component {
   }
 
   render() {
+    // this.props.data.map((value) => { value.email != values.email });
+    var array = [];
+
+    for (let i = 0; i < this.props.data.length; i++) {
+      //   if(this.props.data[i].email !== values.email) error.email = "The email doesn't exist";
+      array.push(this.props.data[i].email);
+    }
+    console.log(array);
     return (
       <div className={style.loginIdentity}>
         <div className={style.loginLeft}>
@@ -45,12 +52,11 @@ class Login extends Component {
                 initialValues={this.state.accountLogin}
                 validate={(values) => {
                   let error = {};
-                  if (this.props.data !== undefined)
-                    this.props.data.map((value) => {
-                      if (value.email !== values.email)
-                        error.email = "The email doesn't exist";
-                    });
-
+                  if (this.props.data !== undefined) {
+                    for(let i=0; i < array.length; i++){
+                      if(array[i] !== values.email) error.email = "The email doesn't exist";
+                    }
+                  }
                   return error;
                 }}
                 validationSchema={Yup.object({
@@ -78,18 +84,19 @@ class Login extends Component {
                       password: values.password,
                     },
                   });
+                  // console.log(this.props.data.map((value) => {return (value.email != values.email) }));
                   if (isValid === false) {
                     error();
                   } else
-                  setTimeout(() => {
-                    setSubmitting(false);
-                    SignIn(
-                      findByTemplate(this.props.data, this.state.accountLogin)
-                    );
-                    resetForm();
-                    success(values.email);
-                    this.props.history.push("./category");
-                  }, 1000);
+                    setTimeout(() => {
+                      setSubmitting(false);
+                      SignIn(
+                        findByTemplate(this.props.data, this.state.accountLogin)
+                      );
+                      resetForm();
+                      success(values.email);
+                      this.props.history.push("./category");
+                    }, 1000);
                 }}
               >
                 {({ values }) => (
