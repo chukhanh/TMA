@@ -35,11 +35,6 @@ export default class Register extends Component {
 
 
   render() {
-    var array = [];
-
-    for (let i = 0; i < this.props.data.length; i++) {
-      array.push(this.props.data[i].email);
-    }
     return (
       <div className={style.registerIdentity}>
         <div className={style.register}>
@@ -49,10 +44,9 @@ export default class Register extends Component {
               initialValues={this.state.form}
               validate={(values) => {
                 let error = {};
-                if (this.props.data !== undefined) {
-                  for(let i=0; i < array.length; i++){
-                    if(array[i] === values.email) error.email = "The email does exist";
-                  }
+                if (this.props.data !== 0 && this.props.array !== 0) {
+                  let index = this.props.array.findIndex(el => el === values.email);
+                  if(index !== -1)  error.email = "The email does exist";
                 }
                 return error;
               }}

@@ -20,14 +20,6 @@ class Login extends Component {
   }
 
   render() {
-    // this.props.data.map((value) => { value.email != values.email });
-    var array = [];
-
-    for (let i = 0; i < this.props.data.length; i++) {
-      //   if(this.props.data[i].email !== values.email) error.email = "The email doesn't exist";
-      array.push(this.props.data[i].email);
-    }
-    console.log(array);
     return (
       <div className={style.loginIdentity}>
         <div className={style.loginLeft}>
@@ -52,10 +44,9 @@ class Login extends Component {
                 initialValues={this.state.accountLogin}
                 validate={(values) => {
                   let error = {};
-                  if (this.props.data !== undefined) {
-                    for(let i=0; i < array.length; i++){
-                      if(array[i] !== values.email) error.email = "The email doesn't exist";
-                    }
+                  if (this.props.data !== 0 && this.props.array !== undefined) {
+                    let index = this.props.array.findIndex(el => el === values.email);
+                    if(index === -1)  error.email = "The email doesn't exist";
                   }
                   return error;
                 }}
@@ -84,7 +75,6 @@ class Login extends Component {
                       password: values.password,
                     },
                   });
-                  // console.log(this.props.data.map((value) => {return (value.email != values.email) }));
                   if (isValid === false) {
                     error();
                   } else

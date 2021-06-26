@@ -5,6 +5,7 @@ import {
   Route,
   useRouteMatch,
 } from "react-router-dom";
+import { array } from "yup/lib/locale";
 
 import { apiAccount } from "../../services/URL/URL";
 import ProductScreen from "./Categories/productScreen";
@@ -15,7 +16,8 @@ import Register from "./Register/Register";
 const Identity = () => {
   const { path } = useRouteMatch();
   let [users, setUsers] = useState([]);
-
+  let arrayEmail = [];
+  users.map(el => arrayEmail.push(el.email));
   useEffect(() => {
     axios.get(apiAccount).then((response) => setUsers(response.data));
   }, []);
@@ -49,18 +51,19 @@ const Identity = () => {
     return [storedValue, setValue];
   }
 
+
   return (
     <Switch>
       <Route
         exact
         path={`${path}/login`}
-        render={(props) => <Login {...props} data={users} />}
+        render={(props) => <Login {...props} data={users} array={arrayEmail}/>}
       />
 
       <Route
         exact
         path={`${path}/register`}
-        render={(props) => <Register {...props} data={users} />}
+        render={(props) => <Register {...props} data={users} array={arrayEmail} />}
       />
       <Route
         exact
