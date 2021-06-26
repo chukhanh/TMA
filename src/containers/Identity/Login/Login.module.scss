@@ -24,6 +24,7 @@
       margin: auto 0;
 
       h1 {
+        color: white;
         text-align: center;
         margin: 0 auto;
         font-weight: 800;
@@ -31,6 +32,7 @@
       }
 
       h2 {
+        color: white;
         text-align: center;
         margin: 2rem auto;
         font-weight: 300;
@@ -50,7 +52,6 @@
           color: #fff;
           padding: 0.5rem 5rem;
           cursor: pointer;
-          // border-radius: 1rem;
 
           &:hover,
           &:active,
@@ -58,6 +59,13 @@
             // border-left: none;
             // border-right: none;
             box-shadow: 0.5rem 1rem #3498db;
+          }
+
+          a {
+            text-decoration: none !important;
+            font-style: none;
+            text-decoration-style: none;
+            color: #fff !important;
           }
         }
       }
