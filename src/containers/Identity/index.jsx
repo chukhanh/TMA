@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import { array } from "yup/lib/locale";
 
-import { apiAccount } from "../../services/URL/URL";
+import { apiAccount, apiProduct } from "../../services/URL/URL";
 import ProductScreen from "./Categories/productScreen";
 
 import Login from "./Login/Login";
@@ -16,8 +16,15 @@ import Register from "./Register/Register";
 const Identity = () => {
   const { path } = useRouteMatch();
   let [users, setUsers] = useState([]);
+  let [product, setProducts]= useState([]);
+
+  useEffect(() => {
+    axios.get(apiProduct).then((response) => setProducts(response.data));
+  }, []);
+
   let arrayEmail = [];
   users.map(el => arrayEmail.push(el.email));
+  
   useEffect(() => {
     axios.get(apiAccount).then((response) => setUsers(response.data));
   }, []);
@@ -68,7 +75,7 @@ const Identity = () => {
       <Route
         exact
         path={`${path}/category`}
-        render={(props) => <ProductScreen {...props} useLocalStorage={useLocalStorage}/>}
+        render={(props) => <ProductScreen {...props} useLocalStorage={useLocalStorage} product={product}/>}
       />
     </Switch>
   );

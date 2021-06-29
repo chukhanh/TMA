@@ -1,0 +1,16 @@
+.categoryRating{
+    width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-content: space-between;
+
+  .title{
+    width: 90%;
+    margin: 0 auto;
+  }
+  .rate{
+    width: 90%;
+    margin: 0 auto;
+  }
+}

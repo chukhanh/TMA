@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Logo from "../Logo/Logo";
 import "./Header.scss";
 import { Menu, Dropdown, message } from "antd";
