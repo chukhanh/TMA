@@ -6,9 +6,18 @@
     align-content: space-around;
 
     .body{
-        width: 80%;
-        margin: 0 auto;
+        width: 90%;
+        margin: 5rem auto;
         display: flex;
         flex-direction: row;
+        
+
+        .product{
+            margin: 0 auto;
+            background-color: rgba($color: #EBEBEB, $alpha: .4);
+            width: 75%;
+            margin-left: 5.5rem;
+        }
     }
+
 }

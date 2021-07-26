@@ -7,24 +7,22 @@ import CategoryPrice from "./CategoryPrice/CategoryPrice";
 
 export default class CategoryMenu extends Component {
   render() {
-    let array = this.props.productItem.map((element) => element.Type);
-    let priceArray = this.props.productItem.map((element) => element.Price);
-    let type = () => {
-      return Array.from(new Set(array))
-    }
-    let price = () => {
-      return Array.from(new Set(priceArray))
-    }
+    let typeArray = this.props.productItem.map((element) => element.productType);
+    let priceArray = this.props.productItem.map((element) => element.price);
 
-    let newArrayPrice = price().sort((a,b)=> a-b);
-    console.log(newArrayPrice);
+    let setType = (arr) => {
+      return Array.from(new Set(arr));
+    };
+    const type = new Map([...typeArray].map(
+      x => [x, typeArray.filter(y => y === x).length]
+  ));
 
     return (
       <div className={style.categoryMenu}>
-        <CategoryTotal productType={array}/>
-        <CategoryBrands type={type()}/>
-        <CategoryRating/>
-        <CategoryPrice newArrayPrice={newArrayPrice}/>
+        <CategoryTotal productType={type} productTotal = {typeArray} typeArray={setType(typeArray)}/>
+        <CategoryBrands typeArray={setType(typeArray)}/>
+        <CategoryRating />
+        <CategoryPrice newArrayPrice={setType(priceArray)} />
       </div>
     );
   }

@@ -5,10 +5,11 @@ import {
   Route,
   useRouteMatch,
 } from "react-router-dom";
-import { array } from "yup/lib/locale";
+import { getProduct } from "../../services/api/ProductServices";
 
-import { apiAccount, apiProduct } from "../../services/URL/URL";
+import { apiAccount } from "../../services/URL/URL";
 import ProductScreen from "./Categories/productScreen";
+import ProductInfo from "./Categories/ProductsInfo/ProductInfo";
 
 import Login from "./Login/Login";
 import Register from "./Register/Register";
@@ -16,15 +17,15 @@ import Register from "./Register/Register";
 const Identity = () => {
   const { path } = useRouteMatch();
   let [users, setUsers] = useState([]);
-  let [product, setProducts]= useState([]);
+  let [product, setProducts] = useState([]);
 
   useEffect(() => {
-    axios.get(apiProduct).then((response) => setProducts(response.data));
+    setProducts(getProduct);
   }, []);
 
   let arrayEmail = [];
-  users.map(el => arrayEmail.push(el.email));
-  
+  users.map((el) => arrayEmail.push(el.email));
+
   useEffect(() => {
     axios.get(apiAccount).then((response) => setUsers(response.data));
   }, []);
@@ -35,12 +36,11 @@ const Identity = () => {
         const item = window.localStorage.getItem(key);
         return item ? JSON.parse(item) : 0;
       } catch (error) {
-        
         console.log(error);
         return 0;
       }
     });
-
+    console.log(product);
     const setValue = (value) => {
       try {
         // Allow value to be a function so we have same API as useState
@@ -56,27 +56,47 @@ const Identity = () => {
       }
     };
     return [storedValue, setValue];
-  }
-
+  };
 
   return (
     <Switch>
       <Route
         exact
         path={`${path}/login`}
-        render={(props) => <Login {...props} data={users} array={arrayEmail}/>}
+        render={(props) => <Login {...props} data={users} array={arrayEmail} />}
       />
 
       <Route
         exact
         path={`${path}/register`}
-        render={(props) => <Register {...props} data={users} array={arrayEmail} />}
+        render={(props) => (
+          <Register {...props} data={users} array={arrayEmail} />
+        )}
       />
       <Route
         exact
         path={`${path}/category`}
-        render={(props) => <ProductScreen {...props} useLocalStorage={useLocalStorage} product={product}/>}
+        render={(props) => (
+          <ProductScreen
+            {...props}
+            useLocalStorage={useLocalStorage}
+            product={product}
+          />
+        )}
       />
+      {product.map((el) => {
+        return <Route 
+        exact
+        path={`${path}/category/${el.id}`} 
+        render={(props) => (
+          <ProductInfo
+            {...props}  
+            useLocalStorage={useLocalStorage}
+            product={product}
+          />
+        )}
+        />
+      })}
     </Switch>
   );
 };

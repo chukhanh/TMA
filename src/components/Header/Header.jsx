@@ -11,6 +11,7 @@ const Header = ({ history, useLocalStorage }) => {
     switch (key) {
       case "1":
         localStorage.removeItem("accountLoginInfo");
+        localStorage.removeItem("Order");
         history.push(`./login`);
         break;
 

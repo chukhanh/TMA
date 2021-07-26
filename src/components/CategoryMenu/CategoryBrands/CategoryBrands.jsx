@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { Formik, Field, Form } from "formik";
 import style from "./CategoryBrands.module.scss";
 
-const CategoryBrands = ({ type }) => {
+const CategoryBrands = ({ typeArray }) => {
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
   return (
@@ -11,7 +11,7 @@ const CategoryBrands = ({ type }) => {
       <h2 className={style.title}>Brands</h2>
       <Formik
         initialValues={{
-          checked: type,
+          checked: typeArray,
         }}
         onChange={async (values) => {
           await sleep(500);
@@ -20,7 +20,7 @@ const CategoryBrands = ({ type }) => {
       >
         {({ values }) => (
           <Form className={style.form}>
-            {type.map((el) => {
+            {typeArray.map((el) => {
               return (
                 <label className={style.label}>
                   <Field type="checkbox" name="checked" value={el} />

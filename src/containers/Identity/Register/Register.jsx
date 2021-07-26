@@ -47,6 +47,7 @@ export default class Register extends Component {
                 if (this.props.data !== 0 && this.props.array !== 0) {
                   let index = this.props.array.findIndex(el => el === values.email);
                   if(index !== -1)  error.email = "The email does exist";
+                  // if(index !== 1) error.password =" aaaa";
                 }
                 return error;
               }}

@@ -52,7 +52,7 @@ class Login extends Component {
                 }}
                 validationSchema={Yup.object({
                   email: Yup.string()
-                    .email("Invalid email addresss`")
+                    .email("Invalid email addresss")
                     .required("Required"),
                   password: Yup.string()
                     .min(8, "Minimum 8 characters")
